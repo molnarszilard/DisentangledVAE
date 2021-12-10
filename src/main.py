@@ -90,8 +90,8 @@ def main(args):
             model.load_state_dict(checkpoint['state_dict'])
         # Model needs to be transferred to the cpu as sample and reconstruct are custom methods
         model = model.cpu()
-        model.sample_depth(10,latest_subdir[-1])
-        model.reconstruct_depth(10,latest_subdir[-1])
+        model.sample_depth(1,latest_subdir[-1])
+        model.reconstruct_depth(1,latest_subdir[-1])
 
 if __name__ == "__main__":
     """ call main() function here """

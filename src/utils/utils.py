@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import torchvision
 from torchvision.utils import save_image
-
+from datasetloader import DatasetLoader
 
 def filepath_is_not_valid(filepath):
     """
@@ -193,5 +193,5 @@ def plot_multiple(images, n, dim, cmap):
 
 def save_depth_images(images, n, dim, mode, version):
     save_path = "../samples/"
-    for i in n:
-        save_image(images[0], save_path +"version_"version+"_"+mode+str(n)+'.png')
+    for i in range(n):
+        save_image(images[0], save_path +"version_"+version+"_"+mode+str(n)+'.png')

@@ -104,7 +104,7 @@ def parse_config_file(filepath, variation):
     learning_rate = float(lr_str)
     
     gpus_str = config.get('hyperparameters', 'gpus') #set number of gpus, 
-    gpus = float(gpus_str)
+    gpus = int(gpus_str)
 
     if variation == 'B-VAE':
         beta_str = config.get('hyperparameters', 'beta')

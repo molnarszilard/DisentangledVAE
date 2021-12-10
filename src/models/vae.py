@@ -283,7 +283,7 @@ class VAE(pl.LightningModule):
         This methos samples n depth images, and saves them
         """
         samples = []
-        for i in n:
+        for i in range(n):
             # create a new latent vector consisting of random values
             z = torch.randn(1, self.z_dim)
 
@@ -304,6 +304,7 @@ class VAE(pl.LightningModule):
         # get as many batches from the test set to fill the final plot
         tensors = []
         img_count = 0
+        self.test_loader = self.test_dataloader()
         while n * n > img_count:
             batch, y = next(iter(self.test_loader))
             img_count += len(batch)
@@ -337,7 +338,8 @@ class VAE(pl.LightningModule):
 
         # get as many batches from the test set to fill the final plot
         tensors = []
-        img_count = 0
+        img_count = 0        
+        self.test_loader = self.test_dataloader()
         while n > img_count:
             batch, y = next(iter(self.test_loader))
             img_count += len(batch)
