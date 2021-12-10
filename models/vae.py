@@ -285,12 +285,13 @@ class VAE(pl.LightningModule):
         samples = []
         for i in range(n):
             # create a new latent vector consisting of random values
-            z = torch.randn(1, self.z_dim)
+            z = torch.randn(n, self.z_dim)
 
             # pass the vector through the decoder
-            samples.append(self._decode(z))
-
-        save_depth_images(samples, n, self.dataset_shape,"sample",version)
+            samples = self._decode(z)
+        max_uint16 = 65535
+        samples=samples*max_uint16
+        save_depth_images(samples.detach().numpy().astype(np.uint16), n, self.dataset_shape,"sample",version)
 
     def reconstruct(self, n):
         """
@@ -338,7 +339,7 @@ class VAE(pl.LightningModule):
 
         # get as many batches from the test set to fill the final plot
         tensors = []
-        img_count = 0        
+        img_count = 0
         self.test_loader = self.test_dataloader()
         while n > img_count:
             batch, y = next(iter(self.test_loader))
@@ -351,9 +352,10 @@ class VAE(pl.LightningModule):
         # pass them through the model
         X_hat, mean, std = self(X)
         min_imgs = min(n, len(X))
-
+        max_uint16 = 65535
+        X_hat = X_hat*max_uint16
         # plot the images and their reconstructions
-        save_depth_images(X_hat, min_imgs, self.dataset_shape,"reconstruct", version)
+        save_depth_images(X_hat.detach().numpy().astype(np.uint16), min_imgs, self.dataset_shape,"reconstruct", version)
 
     @staticmethod
     def _data_fidelity_loss(X, X_hat, eps=1e-10):

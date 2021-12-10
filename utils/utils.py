@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import torchvision
 from torchvision.utils import save_image
 from datasetloader import DatasetLoader
+import cv2
+import imageio
 
 def filepath_is_not_valid(filepath):
     """
@@ -192,6 +194,15 @@ def plot_multiple(images, n, dim, cmap):
         plt.show()
 
 def save_depth_images(images, n, dim, mode, version):
-    save_path = "../samples/"
+    save_path = "samples/"
     for i in range(n):
-        save_image(images[0], save_path +"version_"+version+"_"+mode+str(n)+'.png')
+        image = images[0]
+        while len(image.shape)>2:
+            image=image.squeeze(axis=0)
+        # print(image.shape)
+        # print(image.dtype)
+        # image=image.detach().cpu().numpy().astype(np.uint16)
+        path = save_path +"version_"+version+"_"+mode+str(i)+".png"        
+        # save_image(image, path)
+        cv2.imwrite(path,image)
+        # imageio.imwrite(path,image)

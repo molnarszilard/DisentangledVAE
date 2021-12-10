@@ -78,7 +78,7 @@ target/
 .ipynb_checkpoints
 notebook/data*
 notebook/drive*
-*/lightning_logs/*
+lightning_logs/*
 samples/*
 data/*
 
@@ -138,7 +138,7 @@ datasets
 dataset
 Dataset
 Datasets
-src/lightning_logs
+lightning_logs
 mathematical_analysis/*.log
 mathematical_analysis/*.gz
 mathematical_analysis/*.fls

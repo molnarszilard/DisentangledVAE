@@ -20,19 +20,19 @@ def parse_cmd_args(arg=None):
     # add an argument for the path of the dataset
     help = "The full/relative path to the file containing the config file."
     parser.add_argument("-c", "--config", type=str, action="store", metavar="configuration_file_path",
-                        required=True, help=help)
+                        default="config/config5.cfg", help=help)
 
 
     help = "The variation of VAE to be trained (VAE, beta-VAE)"
     parser.add_argument("-v", "--variation", type=str, action="store", metavar="model_variation",
-                        required=True, help=help)
+                        default="B-VAE", help=help)
     
     help = "Every trained model has a version number. Which one would you like to use in the evaluation? If it is left empty or a negative number, then the latest model is used."
-    parser.add_argument("--model_version", type=int, action="store", default=-1,
+    parser.add_argument("--model_version", type=int, action="store", default=1,
                         help=help)
     
     help = "Would you like to 'train', 'eval' or 'visualize'?"
-    parser.add_argument("--mode", type=str, action="store", default="train",
+    parser.add_argument("--mode", type=str, action="store", default="visualize",
                         help=help)
 
     # parse the arguments and return the result
