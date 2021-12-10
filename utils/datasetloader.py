@@ -35,7 +35,8 @@ class DatasetLoader(data.Dataset):
         #     img = self.transform(depth_input_mod)
         target: Any = []
 
-        return depth_input/torch.max(depth_input), target
+        # return depth_input/torch.max(depth_input), target
+        return depth_input, target
 
 
     def __len__(self):
