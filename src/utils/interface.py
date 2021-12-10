@@ -26,6 +26,14 @@ def parse_cmd_args(arg=None):
     help = "The variation of VAE to be trained (VAE, beta-VAE)"
     parser.add_argument("-v", "--variation", type=str, action="store", metavar="model_variation",
                         required=True, help=help)
+    
+    help = "Every trained model has a version number. Which one would you like to use in the evaluation? If it is left empty or a negative number, then the latest model is used."
+    parser.add_argument("--model_version", type=int, action="store", default=-1,
+                        help=help)
+    
+    help = "Would you like to 'train', 'eval' or 'visualize'?"
+    parser.add_argument("--mode", type=str, action="store", default="train",
+                        help=help)
 
     # parse the arguments and return the result
     return parser.parse_args(arg)
@@ -94,6 +102,9 @@ def parse_config_file(filepath, variation):
 
     lr_str = config.get('hyperparameters', 'learning_rate')
     learning_rate = float(lr_str)
+    
+    gpus_str = config.get('hyperparameters', 'gpus') #set number of gpus, 
+    gpus = float(gpus_str)
 
     if variation == 'B-VAE':
         beta_str = config.get('hyperparameters', 'beta')
@@ -116,7 +127,8 @@ def parse_config_file(filepath, variation):
     hyperparameters = {
         "epochs": epochs,
         "batch_size": batch_size,
-        "learning_rate": learning_rate
+        "learning_rate": learning_rate,
+        "gpus": gpus
     }
 
     if variation == 'B-VAE':

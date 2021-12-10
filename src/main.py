@@ -34,15 +34,64 @@ def main(args):
         model = betaVAE(architecture, hyperparameters, dataset_info)
 
     # here you can change the gpus parameter into the amount of gpus you want the model to use
-    trainer = Trainer(max_epochs = hyperparameters["epochs"], gpus=None, fast_dev_run=False)
+    if hyperparameters["gpus"]==1:
+        trainer = Trainer(max_epochs = hyperparameters["epochs"], gpus=hyperparameters["gpus"], fast_dev_run=False)
+    else:
+        trainer = Trainer(max_epochs = hyperparameters["epochs"], gpus=hyperparameters["gpus"],strategy="dp", fast_dev_run=False)
 
     # Training and testing
-    trainer.fit(model)
-    result = trainer.test(model)
-    # Model needs to be transferred to the cpu as sample and reconstruct are custom methods
-    model = model.cpu()
-    model.sample(5)
-    model.reconstruct(5)
+    if args.mode=="train":
+        trainer.fit(model)
+        print("Model is saved in: "+trainer.logger.log_dir)
+    if args.mode=="eval":
+        if args.model_version>=0:
+            print("Using previously trained model:")
+            latest_subdir="lightning_logs/version_"+str(args.model_version)
+            entries = os.listdir(latest_subdir+"/checkpoints/")
+            checkpoint = torch.load(latest_subdir+"/checkpoints/"+entries[0])
+            print(latest_subdir)
+            model.load_state_dict(checkpoint['state_dict'])
+            
+        else:
+            print("Using latest model:")
+            result = []
+            b='lightning_logs'
+            for d in os.listdir(b):
+                bd = os.path.join(b, d)
+                if os.path.isdir(bd): result.append(bd)
+            latest_subdir = max(result, key=os.path.getmtime)
+            entries = os.listdir(latest_subdir+"/checkpoints/")
+            checkpoint = torch.load(latest_subdir+"/checkpoints/"+entries[0])
+            print(latest_subdir)
+            model.load_state_dict(checkpoint['state_dict'])
+            
+        result = trainer.test(model)
+        
+    if args.mode=="visualize":
+        if args.model_version>=0:
+            print("Using previously trained model:")
+            latest_subdir="lightning_logs/version_"+str(args.model_version)
+            entries = os.listdir(latest_subdir+"/checkpoints/")
+            checkpoint = torch.load(latest_subdir+"/checkpoints/"+entries[0])
+            print(latest_subdir)
+            model.load_state_dict(checkpoint['state_dict'])
+            
+        else:
+            print("Using latest model:")
+            result = []
+            b='lightning_logs'
+            for d in os.listdir(b):
+                bd = os.path.join(b, d)
+                if os.path.isdir(bd): result.append(bd)
+            latest_subdir = max(result, key=os.path.getmtime)
+            entries = os.listdir(latest_subdir+"/checkpoints/")
+            checkpoint = torch.load(latest_subdir+"/checkpoints/"+entries[0])
+            print(latest_subdir)
+            model.load_state_dict(checkpoint['state_dict'])
+        # Model needs to be transferred to the cpu as sample and reconstruct are custom methods
+        model = model.cpu()
+        model.sample_depth(10,latest_subdir[-1])
+        model.reconstruct_depth(10,latest_subdir[-1])
 
 if __name__ == "__main__":
     """ call main() function here """

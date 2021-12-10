@@ -273,6 +273,24 @@ class VAE(pl.LightningModule):
             cmap = 'gray'
 
         plot_multiple(samples.detach().numpy(), n, self.dataset_shape, cmap)
+        
+    def sample_depth(self, n, version):
+        """
+        :param int n: The amount of depth images you want to sample
+
+        :return:  None
+
+        This methos samples n depth images, and saves them
+        """
+        samples = []
+        for i in n:
+            # create a new latent vector consisting of random values
+            z = torch.randn(1, self.z_dim)
+
+            # pass the vector through the decoder
+            samples.append(self._decode(z))
+
+        save_depth_images(samples, n, self.dataset_shape,"sample",version)
 
     def reconstruct(self, n):
         """
@@ -307,6 +325,33 @@ class VAE(pl.LightningModule):
 
         # plot the images and their reconstructions
         plot_multiple(X_hat.detach().numpy(), min_imgs, self.dataset_shape, cmap)
+        
+    def reconstruct_depth(self, n, version):
+        """
+        :param int n:  The number of images to plot in each row of whole plot.
+
+        :return:  None
+
+        This method plots n^2 reconstructed (from the test set) images next to each other.
+        """
+
+        # get as many batches from the test set to fill the final plot
+        tensors = []
+        img_count = 0
+        while n > img_count:
+            batch, y = next(iter(self.test_loader))
+            img_count += len(batch)
+            tensors.append(batch)
+
+        # concatenate them
+        X = torch.cat(tensors, dim=0)
+
+        # pass them through the model
+        X_hat, mean, std = self(X)
+        min_imgs = min(n, len(X))
+
+        # plot the images and their reconstructions
+        save_depth_images(X_hat, min_imgs, self.dataset_shape,"reconstruct", version)
 
     @staticmethod
     def _data_fidelity_loss(X, X_hat, eps=1e-10):
