@@ -11,7 +11,11 @@ from interface import *
 from utils import *
 from vae import VAE
 from beta_vae import betaVAE
+import re
 
+def get_trailing_number(s):
+    m = re.search(r'\d+$', s)
+    return str(int(m.group())) if m else None
 
 def main(args):
     """ main() driver function """
@@ -43,6 +47,9 @@ def main(args):
     if args.mode=="train":
         trainer.fit(model)
         print("Model is saved in: "+trainer.logger.log_dir)
+        print("Running test:")            
+        result = trainer.test(model)
+        
     if args.mode=="eval":
         if args.model_version>=0:
             print("Using previously trained model:")
@@ -66,7 +73,7 @@ def main(args):
             model.load_state_dict(checkpoint['state_dict'])
             
         result = trainer.test(model)
-        
+
     if args.mode=="visualize":
         if args.model_version>=0:
             print("Using previously trained model:")
@@ -90,8 +97,8 @@ def main(args):
             model.load_state_dict(checkpoint['state_dict'])
         # Model needs to be transferred to the cpu as sample and reconstruct are custom methods
         model = model.cpu()
-        model.sample_depth(2,latest_subdir[-1])
-        model.reconstruct_depth(1,latest_subdir[-1])
+        model.sample_depth(2,get_trailing_number(latest_subdir))
+        model.reconstruct_depth(1,get_trailing_number(latest_subdir))
 
 if __name__ == "__main__":
     """ call main() function here """

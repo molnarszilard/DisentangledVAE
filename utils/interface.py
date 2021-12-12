@@ -28,11 +28,11 @@ def parse_cmd_args(arg=None):
                         default="B-VAE", help=help)
     
     help = "Every trained model has a version number. Which one would you like to use in the evaluation? If it is left empty or a negative number, then the latest model is used."
-    parser.add_argument("--model_version", type=int, action="store", default=1,
+    parser.add_argument("--model_version", type=int, action="store", default=-1,
                         help=help)
     
-    help = "Would you like to 'train', 'eval' or 'visualize'?"
-    parser.add_argument("--mode", type=str, action="store", default="visualize",
+    help = "Would you like to 'train', 'eval' or 'visualize'? (train also does eval)"
+    parser.add_argument("--mode", type=str, action="store", default="train",
                         help=help)
 
     # parse the arguments and return the result

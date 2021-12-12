@@ -6,7 +6,6 @@ import torchvision
 from torchvision.utils import save_image
 from datasetloader import DatasetLoader
 import cv2
-import imageio
 
 def filepath_is_not_valid(filepath):
     """
@@ -205,4 +204,3 @@ def save_depth_images(images, n, dim, mode, version):
         path = save_path +"version_"+version+"_"+mode+str(i)+".png"        
         # save_image(image, path)
         cv2.imwrite(path,image)
-        # imageio.imwrite(path,image)

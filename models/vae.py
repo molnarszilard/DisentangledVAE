@@ -168,6 +168,7 @@ class VAE(pl.LightningModule):
 
         # compute the output by propagating the latent vector through the decoder and return
         decoded_output = self._decode(z)
+        decoded_output = decoded_output/decoded_output.max()
         return decoded_output, mean, std
 
     def configure_optimizers(self):
