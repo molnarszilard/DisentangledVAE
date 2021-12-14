@@ -161,6 +161,13 @@ class VAE(pl.LightningModule):
         the reconstructed input.
         """
         # encode the input to get mean and standard deviation
+        # max_size = []
+        # # min_size = []
+        # for i in range(len(X)):
+        #     max_size.append(torch.max(X[i]))
+        #     # min_size.append(torch.min(X[i]))
+        #     # X[i] -= torch.min(X[i])
+        #     X[i] /= torch.max(X[i])
         mean, std = self._encode(X)
 
         # get the latent vector z by using the reparameterization trick
@@ -168,7 +175,16 @@ class VAE(pl.LightningModule):
 
         # compute the output by propagating the latent vector through the decoder and return
         decoded_output = self._decode(z)
-        decoded_output = decoded_output/decoded_output.max()
+        # print("input max")
+        # print(X.max())
+        # print("output max")
+        # print(decoded_output.max())
+        # decoded_output = decoded_output/decoded_output.max()
+        # decoded_output = nn.functional.normalize(decoded_output)
+        # print(decoded_output.max())
+        # for i in range(len(X)):
+        #     decoded_output[i]=decoded_output[i]/torch.max(decoded_output[i])*max_size[i]
+
         return decoded_output, mean, std
 
     def configure_optimizers(self):
