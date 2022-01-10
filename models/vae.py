@@ -70,7 +70,6 @@ class VAE(pl.LightningModule):
         # use a linear layer for the input of the decoder
         in_channels = self.conv_channels[-1]
         self.decoder_input = nn.Linear(in_features=self.z_dim, out_features=in_features)
-
         # build the decoder
         self.decoder = create_decoder(architecture, self.encoder_shapes)
 

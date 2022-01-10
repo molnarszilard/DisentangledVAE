@@ -105,6 +105,7 @@ def create_encoder(architecture, input_shape):
     """
 
     # initialize useful variables
+    print(input_shape)
     in_channels = input_shape[0]
     current_shape = (input_shape[1], input_shape[2])
 

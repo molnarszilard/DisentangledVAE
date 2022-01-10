@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import torchvision
 from torchvision.utils import save_image
 from datasetloader import DatasetLoader
+from dataloader_npy import DatasetLoaderNPY
 import cv2
 
 def filepath_is_not_valid(filepath):
@@ -59,6 +60,10 @@ def prepare_dataset(configuration):
         dataset_info["ds_method"] = DatasetLoader
         dataset_info["ds_shape"] = (1, 360, 640)
         dataset_info["ds_path"] = configuration["path"]+"c24/"
+    elif (configuration["dataset"] == "aae"):
+        dataset_info["ds_method"] = DatasetLoaderNPY
+        dataset_info["ds_shape"] = (1,128,128)
+        dataset_info["ds_path"] = "/home/szilard/projects/3d-aae/datasets/results/aae/experiment/enc_dataset/"
     else:
         print("Currently only MNIST & CIFAR10 datasets are supported")
         return None
