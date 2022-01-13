@@ -31,7 +31,7 @@ def parse_cmd_args(arg=None):
     parser.add_argument("--model_version", type=int, action="store", default=-1,
                         help=help)
     
-    help = "Would you like to 'train', 'eval' or 'visualize'? (train also does eval)"
+    help = "Would you like to 'train', 'eval', 'visualize' or 'generate'? (train also does eval)"
     parser.add_argument("--mode", type=str, action="store", default="train",
                         help=help)
 

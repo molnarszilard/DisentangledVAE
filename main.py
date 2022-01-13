@@ -100,6 +100,32 @@ def main(args):
         model.sample_depth(2,get_trailing_number(latest_subdir))
         model.reconstruct_depth(1,get_trailing_number(latest_subdir))
 
+    if args.mode=="generate":
+        if args.model_version>=0:
+            print("Using previously trained model:")
+            latest_subdir="lightning_logs/version_"+str(args.model_version)
+            entries = os.listdir(latest_subdir+"/checkpoints/")
+            checkpoint = torch.load(latest_subdir+"/checkpoints/"+entries[0])
+            print(latest_subdir)
+            model.load_state_dict(checkpoint['state_dict'])
+            
+        else:
+            print("Using latest model:")
+            result = []
+            b='lightning_logs'
+            for d in os.listdir(b):
+                bd = os.path.join(b, d)
+                if os.path.isdir(bd): result.append(bd)
+            latest_subdir = max(result, key=os.path.getmtime)
+            entries = os.listdir(latest_subdir+"/checkpoints/")
+            checkpoint = torch.load(latest_subdir+"/checkpoints/"+entries[0])
+            print(latest_subdir)
+            model.load_state_dict(checkpoint['state_dict'])
+        
+        model = model.cpu()
+        model.sample_latent(10,get_trailing_number(latest_subdir))
+        # model.reconstruct_latent(10,get_trailing_number(latest_subdir))
+
 if __name__ == "__main__":
     """ call main() function here """
     print()

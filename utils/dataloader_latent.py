@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from typing import Any, Callable, Dict, IO, List, Optional, Tuple, Union
 
-class DatasetLoaderNPY(data.Dataset):
+class DatasetLoaderLatent(data.Dataset):
     
     def __init__(self,
                  root: str,
@@ -29,15 +29,17 @@ class DatasetLoaderNPY(data.Dataset):
             
     def __getitem__(self, index):
         path = self.depth_input_paths[index]
-        input=np.load(path, mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII').astype(np.float32)
-        # depth_input = cv2.imread(path,cv2.IMREAD_UNCHANGED).astype(np.float32)
-        # depth_input = np.moveaxis(depth_input,-1,0)
+        # input=np.load(path, mmap_mode=None, allow_pickle=False, fix_imports=True, encoding='ASCII').astype(np.float32)
+        input = cv2.imread(path,cv2.IMREAD_UNCHANGED).astype(np.float32)
+        # print(input.shape)
+        input = np.moveaxis(input,-1,0)
+        # print(input.shape)
         # print(depth_input.shape)
-        input = torch.from_numpy(input).unsqueeze(0)
+        input = torch.from_numpy(input)
         # if self.transform is not None:
         #     img = self.transform(depth_input_mod)
         target: Any = []
-
+        # print(type(input))
         return input/torch.max(input), target
         # return depth_input, target
 
@@ -46,7 +48,7 @@ class DatasetLoaderNPY(data.Dataset):
         return self.length
 
 if __name__ == '__main__':
-    dataset = DatasetLoader()
+    dataset = DatasetLoaderLatent()
     print("Initializing dataset from location:")
     print(dataset.root)
     print(len(dataset))

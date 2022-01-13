@@ -20,7 +20,7 @@ import torch.nn as nn
 import torchvision
 import pytorch_lightning as pl
 from torch.utils.data import Dataset, DataLoader
-
+import cv2
 from model_utils import *
 from utils import *
 
@@ -309,6 +309,26 @@ class VAE(pl.LightningModule):
         samples=samples*max_uint16
         save_depth_images(samples.detach().numpy().astype(np.uint16), n, self.dataset_shape,"sample",version)
 
+    def sample_latent(self, n, version):
+        """
+        :param int n: The amount of depth images you want to sample
+
+        :return:  None
+
+        This methos samples n depth images, and saves them
+        """
+        samples = []
+        for i in range(n):
+            # create a new latent vector consisting of random values
+            z = torch.randn(n, self.z_dim)
+
+            # pass the vector through the decoder
+            samples = self._decode(z)
+        # max_uint16 = 65535
+        samples=samples*255/samples.max()
+        # save_depth_images(samples.detach().numpy().astype(np.uint16), n, self.dataset_shape,"sample",version)
+        save_latent_images(samples.detach().numpy().astype(np.uint8), n, self.dataset_shape,"sample",version)
+
     def reconstruct(self, n):
         """
         :param int n:  The number of images to plot in each row of whole plot.
@@ -372,6 +392,35 @@ class VAE(pl.LightningModule):
         X_hat = X_hat*max_uint16
         # plot the images and their reconstructions
         save_depth_images(X_hat.detach().numpy().astype(np.uint16), min_imgs, self.dataset_shape,"reconstruct", version)
+
+    def reconstruct_latent(self, n, version):
+        """
+        :param int n:  The number of images to plot in each row of whole plot.
+
+        :return:  None
+
+        This method plots n^2 reconstructed (from the test set) images next to each other.
+        """
+
+        # get as many batches from the test set to fill the final plot
+        tensors = []
+        img_count = 0
+        self.test_loader = self.test_dataloader()
+        while n > img_count:
+            batch, y = next(iter(self.test_loader))
+            img_count += len(batch)
+            tensors.append(batch)
+
+        # concatenate them
+        X = torch.cat(tensors, dim=0)
+
+        # pass them through the model
+        X_hat, mean, std = self(X)
+        min_imgs = min(n, len(X))
+        # max_uint16 = 65535
+        # X_hat = X_hat*max_uint16
+        # plot the images and their reconstructions
+        save_latent_images(X_hat.detach().numpy().astype(np.uint8), min_imgs, self.dataset_shape,"reconstruct", version)
 
     @staticmethod
     def _data_fidelity_loss(X, X_hat, eps=1e-10):

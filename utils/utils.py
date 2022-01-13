@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import torchvision
 from torchvision.utils import save_image
 from datasetloader import DatasetLoader
-from dataloader_npy import DatasetLoaderNPY
+from dataloader_latent import DatasetLoaderLatent
 import cv2
 
 def filepath_is_not_valid(filepath):
@@ -61,8 +61,8 @@ def prepare_dataset(configuration):
         dataset_info["ds_shape"] = (1, 360, 640)
         dataset_info["ds_path"] = configuration["path"]+"c24/"
     elif (configuration["dataset"] == "aae"):
-        dataset_info["ds_method"] = DatasetLoaderNPY
-        dataset_info["ds_shape"] = (1,128,128)
+        dataset_info["ds_method"] = DatasetLoaderLatent
+        dataset_info["ds_shape"] = (3,64,64)
         dataset_info["ds_path"] = "/home/szilard/projects/3d-aae/datasets/results/aae/experiment/enc_dataset/"
     else:
         print("Currently only MNIST & CIFAR10 datasets are supported")
@@ -200,9 +200,23 @@ def plot_multiple(images, n, dim, cmap):
 def save_depth_images(images, n, dim, mode, version):
     save_path = "samples/"
     for i in range(n):
-        image = images[0]
+        image = images[i]
         while len(image.shape)>2:
             image=image.squeeze(axis=0)
+        # print(image.shape)
+        # print(image.dtype)
+        # image=image.detach().cpu().numpy().astype(np.uint16)
+        path = save_path +"version_"+version+"_"+mode+str(i)+".png"        
+        # save_image(image, path)
+        cv2.imwrite(path,image)
+
+def save_latent_images(images, n, dim, mode, version):
+    save_path = "latent_samples/"
+    for i in range(n):
+        image = images[i]
+        while len(image.shape)>3:
+            image=image.squeeze(axis=0)
+        image = np.moveaxis(image,0,-1)
         # print(image.shape)
         # print(image.dtype)
         # image=image.detach().cpu().numpy().astype(np.uint16)
