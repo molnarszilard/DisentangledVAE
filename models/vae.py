@@ -328,6 +328,26 @@ class VAE(pl.LightningModule):
         samples=samples*255/samples.max()
         # save_depth_images(samples.detach().numpy().astype(np.uint16), n, self.dataset_shape,"sample",version)
         save_latent_images(samples.detach().numpy().astype(np.uint8), n, self.dataset_shape,"sample",version)
+    
+    def sample_gim(self, n, version):
+        """
+        :param int n: The amount of depth images you want to sample
+
+        :return:  None
+
+        This methos samples n depth images, and saves them
+        """
+        samples = []
+        for i in range(n):
+            # create a new latent vector consisting of random values
+            z = torch.randn(n, self.z_dim)
+
+            # pass the vector through the decoder
+            samples = self._decode(z)
+        # max_uint16 = 65535
+        samples=samples*255
+        # save_depth_images(samples.detach().numpy().astype(np.uint16), n, self.dataset_shape,"sample",version)
+        save_latent_images(samples.detach().numpy().astype(np.uint8), n, self.dataset_shape,"sample",version)
 
     def reconstruct(self, n):
         """

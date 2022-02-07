@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import torchvision
 from torchvision.utils import save_image
 from datasetloader import DatasetLoader
+from datasetloader_gim import DatasetLoaderGIM
 from dataloader_latent import DatasetLoaderLatent
 import cv2
 
@@ -64,6 +65,10 @@ def prepare_dataset(configuration):
         dataset_info["ds_method"] = DatasetLoaderLatent
         dataset_info["ds_shape"] = (3,64,64)
         dataset_info["ds_path"] = "/home/szilard/projects/3d-aae/datasets/results/aae/experiment/enc_dataset/"
+    elif (configuration["dataset"] == "gim"):
+        dataset_info["ds_method"] = DatasetLoaderGIM
+        dataset_info["ds_shape"] = (3, 128, 128)
+        dataset_info["ds_path"] = configuration["path"]+"ModelNet10_gim/"
     else:
         print("Currently only MNIST & CIFAR10 datasets are supported")
         return None
