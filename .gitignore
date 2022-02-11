@@ -81,7 +81,7 @@ notebook/drive*
 lightning_logs/*
 samples/*
 data/*
-
+latent_samples/*
 # IPython
 profile_default/
 ipython_config.py
