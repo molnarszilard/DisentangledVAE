@@ -558,7 +558,7 @@ class VAE(pl.LightningModule):
         kl_divergence_loss = VAE._kl_divergence_loss(mean, std)
 
         # add them to compute the loss for each training example in the mini batch
-        loss = -data_fidelity_loss + kl_divergence_loss + loss_cd*1000
+        loss = kl_divergence_loss - data_fidelity_loss #+loss_cd*1000
 
         # place them all inside a dictionary and return it
         losses = {"data_fidelity": torch.mean(data_fidelity_loss),

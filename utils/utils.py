@@ -68,7 +68,10 @@ def prepare_dataset(configuration):
     elif (configuration["dataset"] == "gim"):
         dataset_info["ds_method"] = DatasetLoaderGIM
         dataset_info["ds_shape"] = (3, 128, 128)
-        dataset_info["ds_path"] = configuration["path"]+"ModelNet10_gim/"
+        if (configuration["object_class"] =="all"):
+            dataset_info["ds_path"] = configuration["path"]+"ModelNet10_gim/"
+        else:
+            dataset_info["ds_path"] = configuration["path"]+"ModelNet10_gim/"+configuration["object_class"]+"/"
     else:
         print("Currently only MNIST & CIFAR10 datasets are supported")
         return None

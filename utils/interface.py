@@ -65,6 +65,7 @@ def parse_config_file(filepath, variation):
     # Get the configuration information
     dataset = config.get('configuration', 'dataset')
     path = config.get('configuration', 'path')
+    object_class = config.get('configuration', 'object_class')
 
     # Get the architecture information
     conv_layers_str = config.get('architecture', 'conv_layers')
@@ -112,7 +113,8 @@ def parse_config_file(filepath, variation):
 
     configuration = {
         "dataset": dataset,
-        "path": path
+        "path": path,
+        "object_class": object_class
     }
 
     architecture = {
